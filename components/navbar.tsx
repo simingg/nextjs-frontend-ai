@@ -8,7 +8,7 @@ export const Navbar: React.FC = () => {
   return (
     <Box h={60} className={styles.navbar}>
       <Group className={styles.group}>
-        <Title order={3}>Spark Engine</Title>
+        <Title order={3}>Document Analyzer</Title>
         <Group>
           <Button
             component="a"

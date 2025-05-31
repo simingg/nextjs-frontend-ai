@@ -1,85 +1,255 @@
 import React, { useState } from 'react';
-import { Box, ScrollArea, Title, Text, Anchor, Center, Image, Flex } from '@mantine/core';
+import { Box, ScrollArea, Title, Text, Anchor, Center, Image, Flex, Paper, Stack, Group, Card, Badge } from '@mantine/core';
 import { ChatInput } from './input';
-import { Message } from './message';
 import styles from '../styles/chatbot.module.css';
+import {
+  IconFileText,
+  IconWorld
+} from '@tabler/icons-react';
+import { Button, Container } from '@mantine/core';
+import ErrorModal from  "./errormodal"
 
+interface AnalysisResponse {
+  summary: string;
+  nationalities: string[];
+}
 
-interface MessageType {
-  message: string;
-  sender: string;
-  loading?: boolean; // Add a loading flag
+interface ErrorResponse {
+  error: string;
+  details?: string;
 }
 
 export const Chatbot: React.FC = () => {
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [output, setOutput] = useState<AnalysisResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('')
+  const [modalOpened, setModalOpened] = useState(false);
 
-  const fetchResponse = async (prompt: string) => {
+
+  const fetchResponseWithFile = async (file: File): Promise<AnalysisResponse | string> => {
     try {
-      const response = await fetch('localhost:8000', {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('http://localhost:8000/analyze', {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
+        body: formData, 
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        // Try to get error details from response
+        let errorMessage = `Error: ${response.status}`;
+        
+        try {
+          const errorData: ErrorResponse = await response.json();
+          errorMessage = errorData.error || errorMessage;
+          if (errorData.details) {
+            errorMessage += ` - ${errorData.details}`;
+          }
+        } catch {
+          // If error response isn't JSON, use status text
+          errorMessage = `Error: ${response.status} ${response.statusText}`;
+        }
+        
+        // Set error state and return early
+        setError(errorMessage);
+        setModalOpened(true);
+        return errorMessage; // or throw new Error(errorMessage) if you prefer
       }
 
-      const data = await response.json();
-      console.log(data)
-      return data.data[0].output;
+      // If response is ok, parse the success response
+      const data: AnalysisResponse = await response.json();
+      
+      // Clear any previous errors on success
+      setError('');
+      
+      return data;
+
     } catch (error) {
-      console.error("Error fetching the API response.", error);
-      return "Sorry, something went wrong.";
+      // Handle network errors or other exceptions
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'An unexpected error occurred';
+      
+      setError(errorMessage);
+      return errorMessage; // or throw error if you prefer
     }
   };
 
-  const handleSendMessage = async (message: string) => {
-    const userMessage = { message, sender: 'user' };
-    setMessages([...messages, userMessage, { message: '', sender: 'bot', loading: true }]);
+  // Function to analyze article with text input
+  const fetchResponseWithText = async (text: string): Promise<AnalysisResponse | string> => {
+    try {
+      // Create FormData for text input
+      const formData = new FormData();
+      formData.append('text', text);
+      console.log(formData)
+
+      const response = await fetch('http://localhost:8000/analyze', {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        // Try to get error details from response
+        let errorMessage = `Error: ${response.status}`;
+        try {
+          const errorData: ErrorResponse = await response.json();
+          errorMessage = errorData.error || errorMessage;
+          if (errorData.details) {
+            errorMessage += ` - ${errorData.details}`;
+          }
+        } catch {
+          errorMessage = `Error: ${response.status} ${response.statusText}`;
+          setError(errorMessage)
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data: AnalysisResponse = await response.json();
+      console.log(data)
+      return data;
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Sorry, something went wrong.";
+      setError(errorMessage)
+      return errorMessage;
+    }
+  };
+
+  // Universal function that handles both file and text input
+  const fetchResponse = async (input: File | string): Promise<AnalysisResponse | string> => {
+    if (input instanceof File) {
+      return fetchResponseWithFile(input);
+    } else {
+      return fetchResponseWithText(input);
+    }
+  };
+
+
+  const handleSubmit = async (input: File | string) => {
+    console.log(input)
+
+    if (!input) return;
+
     setIsLoading(true);
+    setError("");
 
-    const lastSixMessages = [...messages.slice(-5), userMessage].map((msg) => msg.message).join('\n');
-    const botResponse = await fetchResponse(lastSixMessages);
+    const response = await fetchResponse(input);
+    console.log(response)
 
-    setMessages((prev) =>
-      prev.map((msg, index) =>
-        index === prev.length - 1 ? { message: botResponse, sender: 'bot', loading: false } : msg
-      )
-    );
+    if (typeof response === 'string') {
+      setOutput(null);
+    } else {
+      setOutput(response);
+      setError("");
+    }
+
     setIsLoading(false);
   };
 
   return (
-    <Box className={styles.chatbot}>
-      <ScrollArea className={styles.messages}>
-        {messages.length === 0 ? (
-          <Center style={{ height: '70vh' }}>
+    <Box className={styles.chatbot} style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <ScrollArea style={{ flex: 1, padding: '1rem' }}>
+        {!output ? (
+          <Center style={{ height: '100%' }}>
             <Flex justify="center" align="center" direction="column">
               <Image src="logo.png" w={80} h={80} />
-              <Title order={1} mt="md">SparkSDK</Title>
+              <Title order={1} mt="md"> Document Analyzer </Title>
               <Text c="dimmed">
-                Chat with <Anchor target="_blank"> Document AI </Anchor> here.
+                Welcome to  <Anchor target="_blank"> Document Analyzer </Anchor>.
               </Text>
             </Flex>
           </Center>
         ) : (
-          <Box className={styles.messageBox}>
-            {messages.map((msg, index) => (
-              <div key={index} className={styles.messageContainer}>
-                <Message message={msg.message} sender={msg.sender} isLoading={msg.loading && isLoading || false} />
+        <Paper shadow="sm" p="xl" radius="md">
+          <Stack spacing="xl">
+            <Group position="apart" align="center">
+              <Title order={3} size="h4" color="green.6">
+                📊 Analysis Results
+              </Title>
+              <Badge color="green" variant="light" size="lg">
+                Complete
+              </Badge>
+            </Group>
+
+            {/* Summary Card - Expanded */}
+            <Card shadow="xs" padding="xl" radius="md" withBorder style={{ minHeight: '300px' }}>
+              <Stack spacing="md">
+                <Group>
+                  <IconFileText size="1.4rem" color="var(--mantine-color-blue-6)" />
+                  <Text weight={600} size="xl" color="blue.6">
+                    Summary
+                  </Text>
+                </Group>
+                <Text size="lg" style={{ lineHeight: 1.8, padding: '1rem 0' }}>
+                  {output.summary}
+                </Text>
+              </Stack>
+            </Card>
+
+            {/* Nationalities Card - Compact */}
+            <Card shadow="xs" padding="lg" radius="md" withBorder>
+              <Stack spacing="sm">
+                <Group>
+                  <IconWorld size="1.2rem" color="var(--mantine-color-violet-6)" />
+                  <Text weight={600} size="lg" color="violet.6">
+                    Nationalities & Countries Found
+                  </Text>
+                </Group>
+                
+                {output.nationalities.length > 0 ? (
+                  <Group spacing="xs">
+                    {output.nationalities.map((nationality, index) => (
+                      <Badge
+                        key={index}
+                        variant="gradient"
+                        gradient={{ from: 'violet', to: 'blue' }}
+                        size="md"
+                      >
+                        {nationality}
+                      </Badge>
+                    ))}
+                  </Group>
+                ) : (
+                  <Text color="dimmed" size="sm" italic>
+                    No nationalities or countries detected in this article
+                  </Text>
+                )}
+              </Stack>
+            </Card>
+
+            {/* Stats */}
+            <Group position="center" spacing="xl" mt="md">
+              <div style={{ textAlign: 'center' }}>
+                <Text size="xl" weight={700} color="blue.6">
+                  {output.summary.split(' ').length}
+                </Text>
+                <Text size="xs" color="dimmed" transform="uppercase">
+                  Summary Words
+                </Text>
               </div>
-            ))}
-          </Box>
-        )}
+              <div style={{ textAlign: 'center' }}>
+                <Text size="xl" weight={700} color="violet.6">
+                  {output.nationalities.length}
+                </Text>
+                <Text size="xs" color="dimmed" transform="uppercase">
+                  Nationalities Found
+                </Text>
+              </div>
+            </Group>
+          </Stack>
+        </Paper>
+      )}
       </ScrollArea>
-      <Box p="sm">
-        <ChatInput onSendMessage={handleSendMessage} />
+      <Box p="xs" style={{ flexShrink: 0 }}>
+        <ChatInput handleSubmit = {handleSubmit} loading={isLoading} error={error} />
       </Box>
+            <ErrorModal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        errorMessage={error}
+      />
     </Box>
   );
 };
