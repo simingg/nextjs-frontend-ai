@@ -7,7 +7,7 @@ import {
   IconWorld
 } from '@tabler/icons-react';
 import { Button, Container } from '@mantine/core';
-import ErrorModal from  "./errormodal"
+import ErrorModal from './errormodal'
 
 interface AnalysisResponse {
   summary: string;

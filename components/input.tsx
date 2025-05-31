@@ -134,8 +134,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, loading }) =
               </div>
             </div>
           </Group>
-
-          {/* Single Analyze Button */}
           <Group position="center">
             <Button
               lefticon={<IconFileText size="0.9rem" />}
@@ -144,7 +142,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, loading }) =
               size="md"
               variant="filled"
             >
-              {loading ? 'Analyzing...' : 'Analyze'}
+              {loading ? 'Analyzing...' : 'Submit'}
             </Button>
           </Group>
         </Stack>
