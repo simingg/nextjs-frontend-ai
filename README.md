@@ -28,7 +28,7 @@ Follow these steps to set up and run the application online
     npm run dev
     ```
 
-3. Open your browser and go to `http://localhost:3000` to see your chatbot in action.
+3. Open your browser and go to `http://localhost:3000` to see your application in action.
 
 ## Project Structure
 
@@ -44,7 +44,6 @@ Here's a brief overview of the project structure:
 - **Responsive Design**: Built with Mantine UI for a responsive and accessible design.
 
 ### Deployment Process
-
 #### Automatic Deployment
 - **Trigger:** Push to `main` branch
 - **Process:** Amplify automatically detects changes and deploys
