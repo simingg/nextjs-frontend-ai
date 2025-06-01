@@ -33,10 +33,7 @@ export const Chatbot: React.FC = () => {
 
       const response = await fetch('/api/analyze', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -85,14 +82,12 @@ export const Chatbot: React.FC = () => {
       // Create FormData for text input
       const formData = new FormData();
       formData.append('text', text);
-      console.log(formData)
+      // Convert to object for logging
+      console.log('FormData as object:', Object.fromEntries(formData));
 
       const response = await fetch('/api/analyze', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: formData,
       });
 
       if (!response.ok) {

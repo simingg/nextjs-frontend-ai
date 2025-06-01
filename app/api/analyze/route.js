@@ -1,22 +1,33 @@
-// app/api/analyze/route.js
 export async function POST(request) {
-  // These both work in API routes:
-  const apiUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
-  
-  try {
-    const body = await request.json();
-    
-    const response = await fetch(`${apiUrl}/analyze`, {
+  const apiUrl = process.env.API_BASE_URL || 'http://fastapi-docker-ai-env.eba-e9tnf5p2.ap-southeast-1.elasticbeanstalk.com';
+
+  const contentType = request.headers.get('content-type') || '';
+
+  if (contentType.includes('multipart/form-data')) {
+    const formData = await request.formData();
+    const forwardedFormData = new FormData();
+
+    for (const [key, value] of formData.entries()) {
+      forwardedFormData.append(key, value);
+    }
+
+    const backendResponse = await fetch(`${apiUrl}/analyze`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+      body: forwardedFormData,
     });
-    
-    const data = await response.json();
-    return Response.json(data);
-  } catch (error) {
-    return Response.json({ error: 'Failed to analyze' }, { status: 500 });
+
+    const data = await backendResponse.json();
+    return Response.json(data, { status: backendResponse.status });
+  } else {
+    const jsonBody = await request.json();
+
+    const backendResponse = await fetch(`${apiUrl}/analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jsonBody),
+    });
+
+    const data = await backendResponse.json();
+    return Response.json(data, { status: backendResponse.status });
   }
 }
