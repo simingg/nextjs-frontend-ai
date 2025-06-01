@@ -6,7 +6,6 @@ import {
   IconFileText,
   IconWorld
 } from '@tabler/icons-react';
-import { Button, Container } from '@mantine/core';
 import ErrorModal from './errormodal'
 
 interface AnalysisResponse {
@@ -24,6 +23,7 @@ export const Chatbot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('')
   const [modalOpened, setModalOpened] = useState(false);
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
   const fetchResponseWithFile = async (file: File): Promise<AnalysisResponse | string> => {
@@ -32,7 +32,7 @@ export const Chatbot: React.FC = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://localhost:8000/analyze', {
+      const response = await fetch(`${API_BASE_URL}/analyze`, {
         method: "POST",
         body: formData, 
       });
@@ -85,7 +85,7 @@ export const Chatbot: React.FC = () => {
       formData.append('text', text);
       console.log(formData)
 
-      const response = await fetch('http://localhost:8000/analyze', {
+      const response = await fetch(`${API_BASE_URL}/analyze`, {
         method: "POST",
         body: formData,
       });
@@ -154,7 +154,7 @@ export const Chatbot: React.FC = () => {
         {!output ? (
           <Center style={{ height: '100%' }}>
             <Flex justify="center" align="center" direction="column">
-              <Image src="logo.png" w={80} h={80} />
+              <Image src="logo.jpg" w={120} h={120} />
               <Title order={1} mt="md"> Document Analyzer </Title>
               <Text c="dimmed">
                 Welcome to  <Anchor target="_blank"> Document Analyzer </Anchor>.
@@ -194,7 +194,7 @@ export const Chatbot: React.FC = () => {
                 <Group>
                   <IconWorld size="1.2rem" color="var(--mantine-color-violet-6)" />
                   <Text weight={600} size="lg" color="violet.6">
-                    Nationalities & Countries Found
+                    Nationalities, Countries, People, Organizations Found
                   </Text>
                 </Group>
                 

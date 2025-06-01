@@ -6,7 +6,7 @@ A lightweight AI chatbot template built with Spark Engine, Next.js, and Mantine 
 
 ## Introduction
 
-Spark Engine is an autonomous solutions company with a no-code engine for making advanced multi-agent systems and early AGI systems. This project leverages the Spark Engine API to create an AI chatbot that can interact with users through a web interface built with Next.js and Mantine UI.
+
 
 ## Getting Started
 
