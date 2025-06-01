@@ -1,39 +1,20 @@
-# sparkchat-sdk
+# Document Analyzer
 
-A lightweight AI chatbot template built with Spark Engine, Next.js, and Mantine UI.
+A lightweight Document Analzyer built with Next.js and Mantine UI.
 
-![Spark Engine Chatbot](readme-img.png)
 
 ## Introduction
 
 
-
 ## Getting Started
 
-Follow these steps to set up and run your Spark Engine chatbot project:
+Follow these steps to set up and run the application online
 
-### Step 1: Get an API Key
+### Step 1: Configure the Project
 
-1. Go to [Spark Engine](https://sparkengine.ai).
-2. Navigate to `Account > Keys`.
-3. Copy your API key.
+1. Create a .env.local file, and add `API_BASE_URL`=http://fastapi-docker-ai-env.eba-e9tnf5p2.ap-southeast-1.elasticbeanstalk.com.
 
-### Step 2: Configure the Project
-
-1. Open the project and navigate to `/components/chatbot.tsx`.
-2. Find and replace the `SPARKENGINE_PROJECT_ID` with the ID of any public or personal project on Spark Engine. You can use the example provided or your own project ID.
-
-    ```typescript
-    const PROJECT_ID = "your-project-id-here"; // Replace with your project ID
-    ```
-
-3. Ensure that you have set your API key in the `.env.local` file in the root of your project:
-
-    ```plaintext
-    SPARKENGINE_API_KEY=your-api-key
-    ```
-
-### Step 3: Run the Project
+### Step 2: Run the Project
 
 1. Install the project dependencies:
 
@@ -52,30 +33,30 @@ Follow these steps to set up and run your Spark Engine chatbot project:
 ## Project Structure
 
 Here's a brief overview of the project structure:
-
-- **components**: Contains the main React components (`chatbot.tsx`, `input.tsx`, `message.tsx`, `markdown.tsx`, `loader.tsx`, `navbar.tsx`).
+- **components**: Contains the main React components (`chatbot.tsx`, `errormodal.tsx`, `input.tsx`, `markdown.tsx`, `loader.tsx`, `navbar.tsx`).
 - **styles**: Contains the CSS modules for styling components.
-- **app**: Contains the API route for proxying requests to the Spark Engine API.
-- **.env.local**: File for storing environment variables such as your Spark Engine API key.
+- **app**: Contains API proxy to call backend server APIs and main page
+- **.env.local**: File for storing environment variables.
 
 ## Features
 
-- **Chatbot Interface**: Interact with your Spark Engine projects through a conversational interface.
-- **Loader**: Shows a loading indicator while waiting for responses from the Spark Engine API.
+- **Interface**: Upload Text/Docx file OR article text. A summary and list of countries, nationalities will be displayed in top half of screen. Refresh button to reupload.
 - **Responsive Design**: Built with Mantine UI for a responsive and accessible design.
 
-## About Spark Engine
+### Deployment Process
 
-Spark Engine is an autonomous solutions company with a no-code engine for making advanced multi-agent systems and early AGI systems. It allows users to create complex AI-driven projects without writing code, leveraging the power of multi-agent systems to achieve sophisticated tasks.
+#### Automatic Deployment
+- **Trigger:** Push to `main` branch
+- **Process:** Amplify automatically detects changes and deploys
+- **Duration:** ~2-5 minutes
+- **URL:** https://main.d3jt7cirid5w8f.amplifyapp.com/
 
-## Contributing
+#### Manual Deployment
+1. Go to AWS Amplify Console
+2. Select your app
+3. Click "Run build" for manual deployment
 
-Feel free to fork this project and contribute by submitting pull requests. Any contributions are welcome!
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-For more information about Spark Engine, visit [sparkengine.ai](https://sparkengine.ai).
+### Backend Integration
+- API proxy configured at `/api/analyze`
+- Backend: FastAPI on AWS Elastic Beanstalk
+- CORS handled via Next.js API routes
