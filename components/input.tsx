@@ -68,21 +68,21 @@ export const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, loading }) =
      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Compact Input Section */}
       <Paper shadow="sm" p="md" radius="md" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <Stack spacing="md" style={{ height: '100%' }}>
-          <Group position="apart" align="center">
+        <Stack gap="md" style={{ height: '100%' }}>
+          <Group justify="space-between" align="center">
             <Title order={4} size="h5">
               Choose Input Method
             </Title>
           </Group>
 
-          <Group spacing="md" style={{ height: '100%', alignItems: 'stretch' }}>
+          <Group gap="md" style={{ height: '100%', alignItems: 'stretch' }}>
             <div style={{ flex: '0 0 20%', display: 'flex', flexDirection: 'column' }}>
               <Text weight={500} size="xs" mb="xs" color="dimmed">
                 📁 Upload File
               </Text>
               <FileInput
                 placeholder="Choose file"
-                icon={<IconUpload size="0.9rem" />}
+                leftSection={<IconUpload size="0.9rem" />}
                 accept=".txt,.docx"
                 value={file}
                 onChange={handleFileChange}
@@ -134,7 +134,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, loading }) =
               </div>
             </div>
           </Group>
-          <Group position="center">
+          <Group gap="center">
             <Button
               lefticon={<IconFileText size="0.9rem" />}
               onClick={handleAnalyzeClick}

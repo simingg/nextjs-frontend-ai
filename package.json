@@ -1,9 +1,9 @@
 {
-  "name": "sparkchat-sdk",
+  "name": "docAnalyzer-nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -14,9 +14,9 @@
     "@mantine/core": "7.10.0",
     "@mantine/hooks": "7.10.0",
     "@tabler/icons-react": "^3.5.0",
-    "next": "15.3.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "next": "^14.0.0",
     "react-markdown": "^8.0.5",
     "react-syntax-highlighter": "^15.5.0",
     "remark-gfm": "^3.0.1",

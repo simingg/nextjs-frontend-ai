@@ -154,7 +154,7 @@ export const Chatbot: React.FC = () => {
         {!output ? (
           <Center style={{ height: '100%' }}>
             <Flex justify="center" align="center" direction="column">
-              <Image src="logo.jpg" w={120} h={120} />
+              <Image src="logo.jpg" w={120} h={120} alt="Doc Analyzer Logo"/>
               <Title order={1} mt="md"> Document Analyzer </Title>
               <Text c="dimmed">
                 Welcome to  <Anchor target="_blank"> Document Analyzer </Anchor>.
@@ -163,9 +163,9 @@ export const Chatbot: React.FC = () => {
           </Center>
         ) : (
         <Paper shadow="sm" p="xl" radius="md">
-          <Stack spacing="xl">
-            <Group position="apart" align="center">
-              <Title order={3} size="h4" color="green.6">
+          <Stack gap="xl">
+            <Group justify="space-between" align="center">
+              <Title order={3} size="h4" c="green.6">
                 📊 Analysis Results
               </Title>
               <Badge color="green" variant="light" size="lg">
@@ -175,7 +175,7 @@ export const Chatbot: React.FC = () => {
 
             {/* Summary Card - Expanded */}
             <Card shadow="xs" padding="xl" radius="md" withBorder style={{ minHeight: '300px' }}>
-              <Stack spacing="md">
+              <Stack gap="md">
                 <Group>
                   <IconFileText size="1.4rem" color="var(--mantine-color-blue-6)" />
                   <Text weight={600} size="xl" color="blue.6">
@@ -190,7 +190,7 @@ export const Chatbot: React.FC = () => {
 
             {/* Nationalities Card - Compact */}
             <Card shadow="xs" padding="lg" radius="md" withBorder>
-              <Stack spacing="sm">
+              <Stack gap="sm">
                 <Group>
                   <IconWorld size="1.2rem" color="var(--mantine-color-violet-6)" />
                   <Text weight={600} size="lg" color="violet.6">
@@ -199,7 +199,7 @@ export const Chatbot: React.FC = () => {
                 </Group>
                 
                 {output.nationalities.length > 0 ? (
-                  <Group spacing="xs">
+                  <Group gap="xs">
                     {output.nationalities.map((nationality, index) => (
                       <Badge
                         key={index}
@@ -220,7 +220,7 @@ export const Chatbot: React.FC = () => {
             </Card>
 
             {/* Stats */}
-            <Group position="center" spacing="xl" mt="md">
+            <Group justify="center" gap="xl" mt="md">
               <div style={{ textAlign: 'center' }}>
                 <Text size="xl" weight={700} color="blue.6">
                   {output.summary.split(' ').length}
