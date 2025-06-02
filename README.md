@@ -2,6 +2,10 @@
 
 A lightweight Document Analzyer built with Next.js and Mantine UI.
 
+## Demo
+
+https://main.d3jt7cirid5w8f.amplifyapp.com/
+
 
 ## Introduction
 
@@ -28,7 +32,7 @@ Follow these steps to set up and run the application online
     npm run dev
     ```
 
-3. Open your browser and go to `http://localhost:3000` to see your application in action.
+3. Open your browser and go to `http://localhost:3000` to see your ap in action.
 
 ## Project Structure
 
