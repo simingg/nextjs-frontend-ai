@@ -62,4 +62,4 @@ Here's a brief overview of the project structure:
 ### Backend Integration
 - API proxy configured at `/api/analyze`
 - Backend: FastAPI on AWS Elastic Beanstalk
-- CORS handled via Next.js API routes
+- Mixed Content (HTTP vs HTTPS) issue handled via Next.js API routes
